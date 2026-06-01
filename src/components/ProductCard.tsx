@@ -16,7 +16,7 @@ export function ProductCard({ product, reverse, sectionId }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [bursts, setBursts] = useState<number[]>([]);
   const [swarmOpen, setSwarmOpen] = useState(false);
-  const { add, clear, close } = useCart();
+  const { add, close, openCheckout } = useCart();
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -150,8 +150,8 @@ export function ProductCard({ product, reverse, sectionId }: Props) {
         open={swarmOpen}
         onClose={() => setSwarmOpen(false)}
         onConfirm={() => {
-          clear();
           setSwarmOpen(false);
+          openCheckout();
         }}
       />
     </>

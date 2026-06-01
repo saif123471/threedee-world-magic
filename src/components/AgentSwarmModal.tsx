@@ -26,7 +26,8 @@ export function AgentSwarmModal({ open, onClose, onConfirm }: Props) {
     const t2 = setTimeout(() => setStep(2), 2600);
     const t3 = setTimeout(() => setStep(3), 3900);
     const t4 = setTimeout(() => setDone(true), 4500);
-    return () => [t1, t2, t3, t4].forEach(clearTimeout);
+    const t5 = setTimeout(() => onConfirm(), 5600);
+    return () => [t1, t2, t3, t4, t5].forEach(clearTimeout);
   }, [open]);
 
   return (
