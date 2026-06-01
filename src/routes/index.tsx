@@ -1,29 +1,44 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CartProvider } from "@/context/CartContext";
+import { TopNav } from "@/components/TopNav";
+import { Hero } from "@/components/Hero";
+import { ProductCard } from "@/components/ProductCard";
+import { CartDrawer } from "@/components/CartDrawer";
+import { Footer } from "@/components/Footer";
+import { products } from "@/data/products";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Aether Labs — Sound & Time, Reimagined" },
+      {
+        name: "description",
+        content:
+          "Aether Labs designs two objects: the Aether Sound Max headphones and Chronos Orion V2 smartwatch. Engineered to the limit of what's possible.",
+      },
+      { property: "og:title", content: "Aether Labs — Sound & Time, Reimagined" },
+      {
+        property: "og:description",
+        content: "Two luxury objects. Engineered to disappear into your life.",
+      },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <CartProvider>
+      <div className="min-h-screen bg-background text-foreground">
+        <TopNav />
+        <main>
+          <Hero />
+          <ProductCard product={products[0]} sectionId="sound" />
+          <ProductCard product={products[1]} sectionId="time" reverse />
+        </main>
+        <Footer />
+        <CartDrawer />
+      </div>
+    </CartProvider>
   );
 }
