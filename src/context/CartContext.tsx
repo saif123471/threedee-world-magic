@@ -10,14 +10,19 @@ import type { Product } from "@/data/products";
 
 export type CartItem = { product: Product; quantity: number };
 
+export type CartView = "cart" | "checkout" | "success";
+
 type CartContextValue = {
   items: CartItem[];
   isOpen: boolean;
+  view: CartView;
   count: number;
   total: number;
   open: () => void;
   close: () => void;
   toggle: () => void;
+  setView: (v: CartView) => void;
+  openCheckout: () => void;
   add: (product: Product) => void;
   remove: (id: string) => void;
   clear: () => void;
@@ -28,6 +33,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [view, setView] = useState<CartView>("cart");
 
   const add = useCallback((product: Product) => {
     setItems((prev) => {
@@ -54,16 +60,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return {
       items,
       isOpen,
+      view,
       count,
       total,
       open: () => setIsOpen(true),
-      close: () => setIsOpen(false),
+      close: () => {
+        setIsOpen(false);
+        setTimeout(() => setView("cart"), 300);
+      },
       toggle: () => setIsOpen((v) => !v),
+      setView,
+      openCheckout: () => {
+        setView("checkout");
+        setIsOpen(true);
+      },
       add,
       remove,
       clear,
     };
-  }, [items, isOpen, add, remove, clear]);
+  }, [items, isOpen, view, add, remove, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
