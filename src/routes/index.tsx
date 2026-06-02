@@ -3,6 +3,7 @@ import { CartProvider } from "@/context/CartContext";
 import { TopNav } from "@/components/TopNav";
 import { Hero } from "@/components/Hero";
 import { ProductCard } from "@/components/ProductCard";
+import { AgentTimeline } from "@/components/AgentTimeline";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Footer } from "@/components/Footer";
 import { products } from "@/data/products";
@@ -35,6 +36,7 @@ function Index() {
           <Hero />
           <ProductCard product={products[0]} sectionId="sound" />
           <ProductCard product={products[1]} sectionId="time" reverse />
+          <AgentTimeline />
         </main>
         <Footer />
         <CartDrawer />

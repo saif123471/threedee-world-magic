@@ -86,6 +86,8 @@
   --neon-orange: oklch(0.75 0.21 50);
   --neon-cyan: oklch(0.82 0.16 200);
   --neon-violet: oklch(0.7 0.22 295);
+  --neon-green: oklch(0.82 0.2 145);
+  --neon-red: oklch(0.7 0.24 20);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

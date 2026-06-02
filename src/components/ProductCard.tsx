@@ -8,15 +8,13 @@ import {
 } from "framer-motion";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
-import { AgentSwarmModal } from "./AgentSwarmModal";
 
 type Props = { product: Product; reverse?: boolean; sectionId?: string };
 
 export function ProductCard({ product, reverse, sectionId }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [bursts, setBursts] = useState<number[]>([]);
-  const [swarmOpen, setSwarmOpen] = useState(false);
-  const { add, close, openCheckout } = useCart();
+  const { add, close, startSwarm } = useCart();
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -135,7 +133,7 @@ export function ProductCard({ product, reverse, sectionId }: Props) {
                 add(product);
                 setTimeout(() => {
                   close();
-                  setSwarmOpen(true);
+                  startSwarm();
                 }, 600);
               }}
               className="group mt-4 relative overflow-hidden rounded-full border border-border bg-foreground text-background px-7 py-3 text-xs tracking-[0.2em] uppercase font-medium transition-all hover:bg-background hover:text-foreground"
@@ -145,15 +143,6 @@ export function ProductCard({ product, reverse, sectionId }: Props) {
           </div>
         </div>
       </section>
-
-      <AgentSwarmModal
-        open={swarmOpen}
-        onClose={() => setSwarmOpen(false)}
-        onConfirm={() => {
-          setSwarmOpen(false);
-          openCheckout();
-        }}
-      />
     </>
   );
 }
