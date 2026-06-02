@@ -26,6 +26,9 @@ type CartContextValue = {
   add: (product: Product) => void;
   remove: (id: string) => void;
   clear: () => void;
+  swarmActive: boolean;
+  startSwarm: () => void;
+  stopSwarm: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -34,6 +37,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<CartView>("cart");
+  const [swarmActive, setSwarmActive] = useState(false);
 
   const add = useCallback((product: Product) => {
     setItems((prev) => {
@@ -77,8 +81,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       add,
       remove,
       clear,
+      swarmActive,
+      startSwarm: () => setSwarmActive(true),
+      stopSwarm: () => setSwarmActive(false),
     };
-  }, [items, isOpen, view, add, remove, clear]);
+  }, [items, isOpen, view, swarmActive, add, remove, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
