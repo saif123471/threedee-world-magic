@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sparkles, Package, ShieldCheck, ArrowRight, Check, Loader2 } from "lucide-react";
+import { Sparkles, Package, ShieldCheck, ArrowRight, Check, Loader2, AlertTriangle } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 type Status = "idle" | "reviewing" | "completed" | "rejected";
@@ -47,9 +47,14 @@ const AGENTS: AgentStep[] = [
 
 const STEP_MS = 1700;
 
-function formatTime(d: Date) {
-  return d.toLocaleTimeString([], { hour12: false }) + "." +
-    String(d.getMilliseconds()).padStart(3, "0").slice(0, 2);
+function formatTime(input?: string | Date) {
+  const d = input ? new Date(input) : new Date();
+  if (isNaN(d.getTime()) && typeof input === "string") return input;
+  return (
+    d.toLocaleTimeString([], { hour12: false }) +
+    "." +
+    String(d.getMilliseconds()).padStart(3, "0").slice(0, 2)
+  );
 }
 
 const STATUS_STYLE: Record<Exclude<Status, "idle">, { label: string; color: string }> = {
@@ -59,11 +64,12 @@ const STATUS_STYLE: Record<Exclude<Status, "idle">, { label: string; color: stri
 };
 
 export function AgentTimeline() {
-  const { swarmActive, stopSwarm, openCheckout } = useCart();
+  const { swarmActive, stopSwarm, openCheckout, timeline, swarmError } = useCart();
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIdx, setActiveIdx] = useState(-1);
   const [statuses, setStatuses] = useState<Status[]>(AGENTS.map(() => "idle"));
   const [timestamps, setTimestamps] = useState<(string | null)[]>(AGENTS.map(() => null));
+  const [notes, setNotes] = useState<(string | null)[]>(AGENTS.map(() => null));
 
   useEffect(() => {
     if (!swarmActive) return;
@@ -71,10 +77,16 @@ export function AgentTimeline() {
     sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setStatuses(AGENTS.map(() => "idle"));
     setTimestamps(AGENTS.map(() => null));
+    setNotes(AGENTS.map(() => null));
     setActiveIdx(-1);
+  }, [swarmActive]);
+
+  useEffect(() => {
+    if (!swarmActive || timeline === null) return;
 
     const timers: ReturnType<typeof setTimeout>[] = [];
     AGENTS.forEach((_, i) => {
+      const remote = timeline[i];
       timers.push(
         setTimeout(() => {
           setActiveIdx(i);
@@ -85,7 +97,12 @@ export function AgentTimeline() {
           });
           setTimestamps((t) => {
             const next = [...t];
-            next[i] = formatTime(new Date());
+            next[i] = formatTime(remote?.timestamp);
+            return next;
+          });
+          setNotes((n) => {
+            const next = [...n];
+            next[i] = remote?.decision_note ?? AGENTS[i].note;
             return next;
           });
         }, 500 + i * STEP_MS),
@@ -94,7 +111,11 @@ export function AgentTimeline() {
         setTimeout(() => {
           setStatuses((s) => {
             const next = [...s];
-            next[i] = "completed";
+            const remoteStatus = remote?.status?.toLowerCase();
+            next[i] =
+              remoteStatus === "rejected"
+                ? "rejected"
+                : "completed";
             return next;
           });
         }, 500 + i * STEP_MS + STEP_MS - 250),
@@ -103,13 +124,14 @@ export function AgentTimeline() {
 
     timers.push(
       setTimeout(() => {
-        openCheckout();
+        const lastStatus = timeline[AGENTS.length - 1]?.status?.toLowerCase();
+        if (lastStatus !== "rejected") openCheckout();
         stopSwarm();
       }, 500 + AGENTS.length * STEP_MS + 600),
     );
 
     return () => timers.forEach(clearTimeout);
-  }, [swarmActive, openCheckout, stopSwarm]);
+  }, [swarmActive, timeline, openCheckout, stopSwarm]);
 
   const progress = useMemo(() => {
     const done = statuses.filter((s) => s === "completed").length;
@@ -255,7 +277,7 @@ export function AgentTimeline() {
                             Decision Note
                           </p>
                           <p className="text-sm font-light text-foreground leading-relaxed">
-                            {a.note}
+                            {notes[i] ?? a.note}
                           </p>
                           {a.handoff && status === "completed" && (
                             <div className="mt-3 flex items-center gap-2 text-[11px] font-light text-muted-foreground">
@@ -280,6 +302,18 @@ export function AgentTimeline() {
             })}
           </ol>
 
+          {swarmActive && timeline === null && (
+            <p className="mt-10 flex items-center justify-center gap-2 text-center text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.2} />
+              Contacting agent swarm…
+            </p>
+          )}
+          {swarmError && (
+            <p className="mt-6 flex items-center justify-center gap-2 text-center text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--neon-red)" }}>
+              <AlertTriangle className="h-3 w-3" strokeWidth={1.2} />
+              {swarmError} — running local simulation
+            </p>
+          )}
           {!swarmActive && activeIdx === -1 && (
             <p className="mt-10 text-center text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
               Awaiting trigger — initiate from any product

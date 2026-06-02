@@ -12,6 +12,14 @@ export type CartItem = { product: Product; quantity: number };
 
 export type CartView = "cart" | "checkout" | "success";
 
+export type TimelineStep = {
+  agent: string;
+  decision_note: string;
+  timestamp: string;
+  status?: string;
+  handoff?: string | null;
+};
+
 type CartContextValue = {
   items: CartItem[];
   isOpen: boolean;
@@ -27,8 +35,10 @@ type CartContextValue = {
   remove: (id: string) => void;
   clear: () => void;
   swarmActive: boolean;
-  startSwarm: () => void;
+  startSwarm: () => Promise<void>;
   stopSwarm: () => void;
+  timeline: TimelineStep[] | null;
+  swarmError: string | null;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -38,6 +48,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<CartView>("cart");
   const [swarmActive, setSwarmActive] = useState(false);
+  const [timeline, setTimeline] = useState<TimelineStep[] | null>(null);
+  const [swarmError, setSwarmError] = useState<string | null>(null);
 
   const add = useCallback((product: Product) => {
     setItems((prev) => {
@@ -61,6 +73,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const count = items.reduce((s, i) => s + i.quantity, 0);
     const total = items.reduce((s, i) => s + i.quantity * i.product.price, 0);
+    const startSwarm = async () => {
+      setSwarmError(null);
+      setTimeline(null);
+      setSwarmActive(true);
+      try {
+        const userPreferences = items.length
+          ? items
+              .map(
+                (i) =>
+                  `${i.quantity}× ${i.product.name} ($${i.product.price.toLocaleString()})`,
+              )
+              .join(", ")
+          : "Browsing — no cart items yet";
+        const res = await fetch(
+          "https://n8n19821929.app.n8n.cloud/webhook-test/aether-order",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userPreferences }),
+          },
+        );
+        if (!res.ok) throw new Error(`Webhook ${res.status}`);
+        const raw = await res.json();
+        const arr: TimelineStep[] = Array.isArray(raw)
+          ? raw
+          : Array.isArray(raw?.timeline)
+            ? raw.timeline
+            : Array.isArray(raw?.steps)
+              ? raw.steps
+              : [];
+        setTimeline(arr);
+      } catch (e) {
+        setSwarmError(e instanceof Error ? e.message : "Agent swarm unreachable");
+        setTimeline([]);
+      }
+    };
     return {
       items,
       isOpen,
@@ -82,10 +130,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       remove,
       clear,
       swarmActive,
-      startSwarm: () => setSwarmActive(true),
+      startSwarm,
       stopSwarm: () => setSwarmActive(false),
+      timeline,
+      swarmError,
     };
-  }, [items, isOpen, view, swarmActive, add, remove, clear]);
+  }, [items, isOpen, view, swarmActive, timeline, swarmError, add, remove, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
