@@ -4,7 +4,7 @@ import { X, Trash2, ChevronLeft, CreditCard, Bitcoin, Check, Apple } from "lucid
 import { useCart } from "@/context/CartContext";
 
 export function CartDrawer() {
-  const { isOpen, close, items, total, remove, view, setView, clear, openCheckout } = useCart();
+  const { isOpen, close, items, total, remove, view, setView, clear, startSwarm } = useCart();
 
   return (
     <AnimatePresence>
@@ -94,10 +94,13 @@ export function CartDrawer() {
                     </div>
                     <button
                       disabled={items.length === 0}
-                      onClick={openCheckout}
+                      onClick={() => {
+                        close();
+                        setTimeout(startSwarm, 350);
+                      }}
                       className="w-full rounded-full bg-foreground text-background py-3 text-xs tracking-[0.2em] uppercase font-medium disabled:opacity-30 transition-opacity"
                     >
-                      Check Out
+                      Consult Agent Swarm &amp; Checkout
                     </button>
                   </div>
                 </motion.div>
