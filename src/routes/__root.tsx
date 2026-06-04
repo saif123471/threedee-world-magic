@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "lab" },
+      { name: "description", content: "Build interactive 3D websites and visualize multi-agent AI workflows." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "lab" },
+      { property: "og:description", content: "Build interactive 3D websites and visualize multi-agent AI workflows." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "lab" },
+      { name: "twitter:description", content: "Build interactive 3D websites and visualize multi-agent AI workflows." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2303fa89-bb8c-4497-bbab-979c9c72f44d/id-preview-723a80f7--a3883f9f-0d3f-4dea-898a-d317372346d7.lovable.app-1780416563243.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2303fa89-bb8c-4497-bbab-979c9c72f44d/id-preview-723a80f7--a3883f9f-0d3f-4dea-898a-d317372346d7.lovable.app-1780416563243.png" },
     ],
     links: [
       {
