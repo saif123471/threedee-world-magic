@@ -125,7 +125,12 @@ Frontend Response
 
 ## Demo
 
-Video Demonstration Included In Submission
+A complete end-to-end video demonstration is included with the submission, showing:
+- Order creation
+- Agent collaboration
+- Inventory validation
+- Security checks
+- Database updates in Supabase
 
 ---
 
