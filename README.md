@@ -1,80 +1,133 @@
-# Aether Labs - Multi-Agent E-commerce System
+# 🚀 Aether Labs — AI Agent Orchestration Platform for E-commerce
 
 ## Overview
 
-Aether Labs is a cloud-based Multi-Agent E-commerce Backend built with n8n, LangChain, OpenAI, and Supabase.
+Aether Labs is an AI-powered e-commerce backend that demonstrates how specialized AI agents can collaborate through an orchestrated workflow to automate order processing.
 
-Instead of relying on traditional static backend logic, the platform uses specialized AI agents that collaborate to process customer orders, validate inventory, perform fraud analysis, and manage order fulfillment automatically.
+Built with **n8n**, **LangChain**, **OpenAI**, and **Supabase**, the platform replaces rigid backend pipelines with modular AI-driven decision making, enabling transparent and extensible enterprise workflows.
 
----
-
-## Problem
-
-Traditional e-commerce systems often rely on rigid backend workflows that cannot dynamically adapt to customer preferences, inventory conditions, or transaction risks.
-
-Additionally, order processing logic is typically centralized, making systems harder to scale and maintain.
+Instead of relying on a single monolithic AI model, the system separates responsibilities across dedicated agents, each optimized for a specific business function.
 
 ---
 
-## Solution
+# 🎯 Problem
 
-Aether Labs introduces a Multi-Agent architecture where specialized AI agents work together to make autonomous decisions throughout the order lifecycle.
+Modern e-commerce platforms often depend on static backend logic that struggles to adapt to changing customer preferences, inventory availability, and transaction risks.
 
-The system:
-
-* Personalizes product recommendations
-* Verifies real-time inventory availability
-* Calculates logistics and pricing
-* Performs fraud and security validation
-* Creates approved orders automatically
+Centralized business logic becomes increasingly difficult to maintain, extend, and scale as enterprise requirements grow.
 
 ---
 
-## Multi-Agent Architecture
+# 💡 Solution
+
+Aether Labs introduces an **AI Agent Orchestration Platform** where specialized agents collaborate through a structured workflow to process customer orders.
+
+Each agent performs a dedicated responsibility before handing structured output to the next stage, creating a transparent and modular decision pipeline.
+
+The platform demonstrates:
+
+* Personalized product selection
+* Real-time inventory validation
+* Logistics and pricing calculations
+* Security and fraud assessment
+* Automated order persistence
+* Transparent execution timeline
+
+---
+
+# 🏗️ Architecture Overview
+
+The system follows an orchestrated multi-agent architecture where each agent owns a specialized responsibility.
+
+Rather than combining all logic into one large prompt, the workflow distributes tasks across modular AI components connected through n8n orchestration.
+
+This separation improves maintainability, transparency, and future scalability.
+
+```text
+                    Customer
+                        │
+                        ▼
+                Frontend Interface
+                        │
+                        ▼
+                  Order Webhook
+                        │
+                        ▼
+        Sales & Personalization Agent
+                        │
+                        ▼
+        Inventory & Logistics Agent
+                        │
+                        ▼
+          Security & Fraud Agent
+                        │
+                        ▼
+              Supabase Order Writer
+                        │
+                        ▼
+                 orders_v2 Database
+                        │
+                        ▼
+               Frontend JSON Response
+```
+
+---
+
+# 🤖 Why Multi-Agent?
+
+Different business responsibilities require different reasoning capabilities.
+
+By separating responsibilities into specialized agents, the system becomes easier to maintain and extend while improving transparency across the order lifecycle.
 
 ### Sales & Personalization Agent
 
-Responsibilities:
+Responsible for:
 
-* Understand customer intent
-* Analyze preferences
-* Select the best product match
+* Understanding customer intent
+* Analyzing preferences
+* Selecting the most appropriate product
 
 Tools:
 
 * Product Catalog Reader
-* User Chat History
+* User History Reader
+
+---
 
 ### Inventory & Logistics Agent
 
-Responsibilities:
+Responsible for:
 
-* Verify stock availability
-* Calculate shipping costs
-* Compute final order pricing
+* Verifying stock availability
+* Calculating logistics costs
+* Computing final pricing
 
 Tools:
 
 * Supabase Inventory Query
 * Shipping Rate Calculator
 
+---
+
 ### Security & Fraud Agent
 
-Responsibilities:
+Responsible for:
 
-* Assess transaction safety
-* Generate tracking numbers
-* Approve or reject orders
+* Transaction validation
+* Fraud assessment
+* Tracking number generation
+* Order approval
+* Database persistence
 
 Tools:
 
-* Fraud Risk Score API
+* Fraud Risk API (Mock)
 * Crypto Signature Verifier
 * Supabase Order Writer
 
 ---
 
-## Technology Stack
+# ⚙️ Technology Stack
 
 * n8n
 * LangChain
@@ -86,65 +139,85 @@ Tools:
 
 ---
 
-## Workflow
+# 🔄 System Workflow
 
-Customer Request
+1. Customer submits an order request.
 
-↓
+2. Sales Agent analyzes customer intent and selects the best product.
 
-Sales Agent
+3. Inventory Agent validates stock and calculates pricing.
 
-↓
+4. Security Agent evaluates transaction safety and approves the order.
 
-Inventory Agent
+5. Approved orders are stored in Supabase.
 
-↓
-
-Security Agent
-
-↓
-
-Supabase Database
-
-↓
-
-Frontend Response
+6. The frontend receives a structured response together with an Agent Decision Timeline.
 
 ---
 
-## Key Features
+# ✨ Key Features
 
-* Multi-Agent Collaboration
-* Dynamic Order Processing
-* Inventory Validation
-* Fraud Detection
+* AI Agent Orchestration
+* Modular Decision Pipeline
+* Real-Time Inventory Validation
+* Fraud Detection Layer
 * Automated Database Updates
-* Real-Time Decision Timeline
+* Transparent Agent Decision Timeline
+* Enterprise-Oriented Architecture
 
 ---
 
-## Demo
+# 🎥 Demo
 
-A complete end-to-end video demonstration is included with the submission, showing:
-- Order creation
-- Agent collaboration
-- Inventory validation
-- Security checks
-- Database updates in Supabase
+The submitted demonstration showcases the complete end-to-end workflow, including:
+
+* Live frontend interaction
+* AI agent orchestration
+* Workflow execution inside n8n
+* Agent Decision Timeline visualization
+* Multiple checkout options
+* Automatic database updates in Supabase
 
 ---
 
-## Future Improvements
+# ⚠️ Current Limitations
+
+This project is a hackathon prototype designed to demonstrate architectural concepts.
+
+Current limitations include:
+
+* Sequential agent execution increases response latency.
+* Shipping and fraud services use mocked integrations.
+* Advanced error recovery has not yet been implemented.
+* Parallel agent execution is not currently supported.
+* Agent-to-agent messaging is planned for future versions.
+
+These limitations were intentionally accepted to prioritize architectural clarity and rapid prototyping during the hackathon.
+
+---
+
+# 🛣️ Future Roadmap
 
 * Agent-to-Agent Messaging
-* Memory Layer
+* Persistent Memory Layer
+* Parallel Agent Execution
+* Dynamic Agent Routing
 * Advanced Error Recovery
 * Production Shipping Integrations
 * Production Fraud Detection APIs
-* Reduced Agent Latency
+* Human-in-the-Loop Validation
+* Reduced End-to-End Latency
 
 ---
 
-## Author
+# 🌍 Vision
 
-Developed for the Band of Agents Hackathon 2026.
+Aether Labs demonstrates how AI Agent Orchestration can evolve traditional backend systems into modular, transparent, and intelligent enterprise platforms.
+
+The project serves as a proof of concept for future AI-native commerce infrastructures where specialized agents collaborate to automate complex business processes while maintaining explainability and scalability.
+
+---
+
+# 👨‍💻 Author
+
+Developed for the **Band of Agents Hackathon 2026** as a demonstration of collaborative AI agent orchestration applied to enterprise e-commerce workflows.
