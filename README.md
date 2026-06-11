@@ -280,7 +280,7 @@ The primary objective is to showcase architectural design, modular AI orchestrat
 
 # 👨‍💻 Author
 
-Developed by **Saif Al-Hajri** for the **Band of Agents Hackathon 2026**.
+Developed by **Saif Al_awadhi** for the **Band of Agents Hackathon 2026**.
 
 Designed as a proof of concept exploring AI Agent Orchestration for intelligent enterprise commerce workflows.
 
